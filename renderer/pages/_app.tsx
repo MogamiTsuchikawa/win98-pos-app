@@ -14,7 +14,7 @@ const App = ({ Component, pageProps }) => {
   };
   return (
     <div className="window" style={windowStyle}>
-      <WindowBar title="hello" />
+      <WindowBar title="芝浦工業大学ﾃﾞｼﾞｸﾘ　POS" />
       <div className="window-body" style={bodyStyle}>
         <RecoilRoot>
           <Component {...pageProps} />
