@@ -17,7 +17,7 @@ const ItemBox = ({ item, itemLimit, onClick }: Props) => {
       }}
     >
       <img
-        src="https://mogami.dev/myicon.jpg"
+        src={`https://r2.mogami.dev/${item.id}.png`}
         style={{ width: "100%", height: 150, objectFit: "cover" }}
       />
       <div style={{ padding: 5 }}>
