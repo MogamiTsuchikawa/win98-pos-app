@@ -19,13 +19,14 @@ import { CartItem } from "../renderer/interfaces/item";
 const appDir = path.dirname(require.main!.filename);
 const jsonFilePath = path.join(appDir, "items.json");
 
-const options = {
+const options: PosPrintOptions = {
   preview: false,
   margin: "0 0 0 0",
   copies: 1,
   printerName: "POS58 Printer",
   timeOutPerLine: 400,
   pageSize: "58mm",
+  boolean: "",
 };
 
 // Prepare the renderer once the app is ready
@@ -75,43 +76,76 @@ ipcMain.on("loadJson", (event: IpcMainEvent) => {
 
 ipcMain.on("submit", (event: IpcMainEvent, items: any) => {
   console.log(event);
-  const {
-    inputMoney,
-    cartItems,
-  }: { inputMoney: number; cartItems: CartItem[] } = items;
+  console.log(items);
+  let { inputMoney, jsonStr }: { inputMoney: number; jsonStr: string } = items;
+  console.log(inputMoney);
+  console.log(jsonStr);
+  const cartItemList: CartItem[] = JSON.parse(jsonStr);
   let sumValue = 0;
-  cartItems.forEach((item) => {
+  cartItemList.forEach((item) => {
     sumValue += item.price;
   });
+  console.log(sumValue);
 
   const data: PosPrintData[] = [
     {
-      type: "text", // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
-      value: "でじくり",
-      style: { fontWeight: "700", textAlign: "center", fontSize: "24px" },
+      type: "image",
+      url: "https://r2.mogami.dev/14x.png", // file path
+      position: "center", // position of image: 'left' | 'center' | 'right'
+      width: "200px", // width of image in px; default: auto
+      height: "137px", // width of image in px; default: 50 or '50px'
     },
     {
       type: "table",
       style: { border: "1px solid #ddd" },
+      tableHeader: [],
       // multi dimensional array depicting the rows and columns of the table body
       tableBody: [
-        ...cartItems.map((item) => {
+        ...cartItemList.map((item) => {
           return [item.name, item.price.toString() + "円"];
         }),
+        ["", ""],
         ["合計", sumValue.toString() + "円"],
         ["お預かり", inputMoney.toString() + "円"],
         ["お釣り", (inputMoney - sumValue).toString() + "円"],
       ],
+      tableFooter: [],
+      // custom style for the table header
+      tableHeaderStyle: { backgroundColor: "#000", color: "white" },
       // custom style for the table body
       tableBodyStyle: { border: "0.5px solid #ddd" },
+      // custom style for the table footer
+      tableFooterStyle: { backgroundColor: "#000", color: "white" },
     },
     {
       type: "text", // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
-      value: "あざした",
+      value: "全て税込(10%)表記です",
+      style: { fontWeight: "700", textAlign: "center", fontSize: "12px" },
+    },
+    {
+      type: "image",
+      url: "https://r2.mogami.dev/1_14x.png", // file path
+      position: "center", // position of image: 'left' | 'center' | 'right'
+      width: "200px", // width of image in px; default: auto
+      height: "137px", // width of image in px; default: 50 or '50px'
+    },
+    {
+      type: "text", // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
+      value: " ",
       style: { fontWeight: "700", textAlign: "center", fontSize: "15px" },
     },
   ];
   PosPrinter.print(data, options as PosPrintOptions);
+  const logFilePath = path.join(
+    appDir,
+    `log_${new Date()
+      .toLocaleString()
+      .replace(/\//g, "-")
+      .replace(/:/g, "-")
+      .replace(/ /g, "_")}.json`
+  );
+  console.log(logFilePath);
+  fs.writeFileSync(logFilePath, jsonStr, "utf8");
 });
 ipcMain.on("exit", () => {
   console.log("quit");

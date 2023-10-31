@@ -25,7 +25,8 @@ const IndexPage = () => {
     setCartItems([]);
   };
   const onSubmit = (inputMoney: number) => {
-    global.ipcRenderer.send("submit", { inputMoney, cartItems });
+    const jsonStr = JSON.stringify(cartItems);
+    global.ipcRenderer.send("submit", { inputMoney, jsonStr });
     setCartItems([]);
   };
   if (items.length === 0 || itemLimits.length === 0)
