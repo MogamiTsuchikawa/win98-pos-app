@@ -4,6 +4,10 @@ export type Item = {
   price: number;
 };
 
+export type CartItem = Item & {
+  addAt: Date;
+};
+
 export type ItemLimit = {
   id: string;
   limit: number;

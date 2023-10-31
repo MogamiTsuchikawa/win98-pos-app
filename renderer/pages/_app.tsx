@@ -2,6 +2,7 @@ import "../../node_modules/98.css/dist/98.css";
 import "../style/reset.css";
 import "../style/window.css";
 import WindowBar from "../components/Window/WindowBar";
+import { RecoilRoot } from "recoil";
 
 const App = ({ Component, pageProps }) => {
   const windowStyle = {
@@ -15,7 +16,9 @@ const App = ({ Component, pageProps }) => {
     <div className="window" style={windowStyle}>
       <WindowBar title="hello" />
       <div className="window-body" style={bodyStyle}>
-        <Component {...pageProps} />
+        <RecoilRoot>
+          <Component {...pageProps} />
+        </RecoilRoot>
       </div>
     </div>
   );

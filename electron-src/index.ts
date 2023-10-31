@@ -1,11 +1,16 @@
 // Native
 import { join } from "path";
 import { format } from "url";
+import fs from "fs";
+import path from "path";
 
 // Packages
 import { BrowserWindow, app, ipcMain, IpcMainEvent } from "electron";
 import isDev from "electron-is-dev";
 import prepareNext from "electron-next";
+
+const appDir = path.dirname(require.main!.filename);
+const jsonFilePath = path.join(appDir, "items.json");
 
 // Prepare the renderer once the app is ready
 app.on("ready", async () => {
@@ -40,10 +45,16 @@ app.on("ready", async () => {
 // Quit the app once all windows are closed
 app.on("window-all-closed", app.quit);
 
-// listen the channel `message` and resend the received message to the renderer process
-ipcMain.on("message", (event: IpcMainEvent, message: any) => {
-  console.log(message);
-  setTimeout(() => event.sender.send("message", "hi from electron"), 500);
+ipcMain.on("loadJson", (event: IpcMainEvent) => {
+  fs.readFile(jsonFilePath, "utf8", (err, data) => {
+    if (err) {
+      console.error("An error occurred while reading the JSON file:", err);
+      return;
+    }
+
+    const items = JSON.parse(data);
+    event.sender.send("loadedJson", items);
+  });
 });
 ipcMain.on("exit", () => {
   console.log("quit");
