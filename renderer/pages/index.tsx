@@ -11,7 +11,11 @@ const IndexPage = () => {
       </div>
       <div style={{ overflowY: "auto" }}>
         <div style={{ display: "flex", flexWrap: "wrap" }}>
-          <ItemBox />
+          <ItemBox
+            item={{ id: "", name: "芝浦工業大学", price: 500 }}
+            itemLimit={{ id: "", limit: 0 }}
+            onClick={() => {}}
+          />
         </div>
       </div>
     </div>
