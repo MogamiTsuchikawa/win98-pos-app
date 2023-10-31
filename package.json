@@ -1,7 +1,9 @@
 {
   "private": true,
   "main": "main/index.js",
-  "productName": "ElectronTypescriptNext",
+  "productName": "win98-pos-app",
+  "name": "win98-pos-app",
+  "version": "1.0.0",
   "scripts": {
     "clean": "rimraf dist main renderer/out renderer/.next",
     "dev": "npm run build-electron && electron .",
