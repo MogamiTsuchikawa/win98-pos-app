@@ -1,6 +1,6 @@
 {
   "private": true,
-  "main": "main/index.js",
+  "main": "main/electron-src/index.js",
   "productName": "win98-pos-app",
   "name": "win98-pos-app",
   "version": "1.0.0",
