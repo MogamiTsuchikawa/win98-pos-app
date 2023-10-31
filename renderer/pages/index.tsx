@@ -48,7 +48,7 @@ const IndexPage = () => {
           style={{
             position: "fixed",
             bottom: 0,
-            width: "100%",
+            width: 300,
             marginBottom: "10px",
           }}
         >
