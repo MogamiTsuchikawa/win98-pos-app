@@ -1,6 +1,5 @@
 // Native
 import { join } from "path";
-import { format } from "url";
 import fs from "fs";
 import path from "path";
 import {
@@ -8,6 +7,7 @@ import {
   PosPrintData,
   PosPrintOptions,
 } from "electron-pos-printer";
+import os from "os";
 
 // Packages
 import { BrowserWindow, app, ipcMain, IpcMainEvent } from "electron";
@@ -17,8 +17,8 @@ import prepareNext from "electron-next";
 import { CartItem } from "../renderer/interfaces/item";
 
 const appDir = path.dirname(require.main!.filename);
-const jsonFilePath = path.join(appDir, "items.json");
-
+const jsonFilePath = path.join(os.homedir(), "items.json");
+console.log(jsonFilePath);
 const options: PosPrintOptions = {
   preview: false,
   margin: "0 0 0 0",
@@ -48,11 +48,7 @@ app.on("ready", async () => {
 
   const url = isDev
     ? "http://localhost:8000/"
-    : format({
-        pathname: join(__dirname, "../renderer/out/index.html"),
-        protocol: "file:",
-        slashes: true,
-      });
+    : join(__dirname, "../../renderer/out/index.html");
 
   mainWindow.loadURL(url);
 
@@ -137,7 +133,7 @@ ipcMain.on("submit", (event: IpcMainEvent, items: any) => {
   ];
   PosPrinter.print(data, options as PosPrintOptions);
   const logFilePath = path.join(
-    appDir,
+    os.homedir(),
     `log_${new Date()
       .toLocaleString()
       .replace(/\//g, "-")
